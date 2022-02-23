@@ -7,7 +7,9 @@ Also known as the Ulam Conjecture, Kakutani's Problem, Syracuse Problem or simpl
 
 The conjecture →
 
-Every positive integer, if you apply these rules, will end up in a four, two, one loop. This is commonly called the Collatz Conjecture after German mathematician Luther Collatz.
+Every positive integer, if you apply these rules, will end up in a four → two → one loop. 
+
+It is called Collatz Conjecture after German mathematician Luther Collatz.
 
 
 
