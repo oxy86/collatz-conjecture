@@ -78,7 +78,7 @@ export default function Home() {
             Collatz Conjecture
           </h1>
           <p className="mt-3 text-2l">
-            Also known as the <code>Ulam Conjecture</code>, <code>Kakutani's Problem</code>, <code>Syracuse Problem</code> or simply <code className='rounded-md bg-gray-100 p-1 mx-1 font-mono'>3N+1</code>
+            Also known as the <code>Ulam Conjecture</code>, <code>Kakutani Problem</code>, <code>Syracuse Problem</code> or simply <code className='rounded-md bg-gray-100 p-1 mx-1 font-mono'>3N+1</code>
           </p>
         </div>
 
