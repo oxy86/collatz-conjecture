@@ -12,6 +12,7 @@ import {
 export default function Home() {
 
   const [series, setSeries] = useState([]);
+  const [logSeries, setLogSeries] = useState([]);
   const [seedNum, setSeedNum] = useState(0);
 
   const handleInputChange = (e) => {
@@ -21,17 +22,28 @@ export default function Home() {
     }
     setSeedNum(newSeedNum);
     const mySeries = computeSeries(newSeedNum);
-    setSeries(mySeries);
+    
   }
 
   const computeSeries = (newSeedNum) => {
     var nextNum = newSeedNum;
     var minNumber = 1;
     var maxSteps = 1000;
-    var nextPair = {};
-    var mySeries = [
-      { step: 0, num: newSeedNum },
+    const mySeries = [
+      { 
+        x: 0, 
+        y: newSeedNum,
+        ct: 1
+      },
     ];
+    const myLogSeries = [
+      { 
+        x: 0, 
+        logy: Math.log10(newSeedNum),
+        ct: 1
+      },
+    ];
+
     var i = 0;
     if (newSeedNum == 1 || newSeedNum == 2 ) {
       minNumber = 0;
@@ -41,26 +53,43 @@ export default function Home() {
     while (nextNum > minNumber && i < maxSteps) {
       i = i + 1;
       nextNum = computeNext(i, nextNum);
-      nextPair = {
-        step: i,
-        num: nextNum
-      };
+      mySeries.push(
+        { x: i, 
+          y: nextNum,
+          ct: 1
+        }
+      );
 
-      mySeries.push({ step: i, num: nextNum });
-      
+      myLogSeries.push(
+        { x: i, 
+          logy: Math.log10(nextNum),
+          ct: 1
+        }
+      );
+
+
     }
+
+    setSeries(mySeries);
+    setLogSeries(myLogSeries);
     return mySeries;
   }
 
-  const computeNext = (i,xi) => {
+  /**
+   * Computes the next number (hailstone) in the sequence
+   * @param {*} i 
+   * @param {*} x_i 
+   * @returns 
+   */
+  const computeNext = (i, x_i) => {
 
-    if (xi % 2 == 0) {
-      // console.log("i:", i, "x=", xi, " is even");
-      return xi / 2;
+    if (x_i % 2 == 0) {
+      // console.log("i:", i, "x=", x_i, " is even");
+      return x_i / 2;
     }
     else {
-      // console.log("i:", i, "x=", xi, " is odd");
-      return 3 * xi + 1;
+      // console.log("i:", i, "x=", x_i, " is odd");
+      return 3 * x_i + 1;
     }
   }
 
@@ -90,7 +119,8 @@ export default function Home() {
             min={1}
             autoFocus 
             type="number"
-            placeholder="1" step="1"  
+            placeholder="1" 
+            step="1"  
             className="rounded text-pink-500 pr-4" 
             value={seedNum} 
             onChange={(e) => handleInputChange(e)} 
@@ -98,7 +128,21 @@ export default function Home() {
           {/* <input type="checkbox" class="rounded text-pink-500" /> */}
         </div>
 
-        <SimpleLineChart className="mylinechart overflow-x-auto w-full h-full flex md:justify-center items-center" data={series} />
+        <SimpleLineChart 
+            className="mylinechart overflow-x-auto w-full h-full flex md:justify-center items-center" 
+            data={series} 
+            dataKeyX="x"
+            dataKeyY="y"
+          />
+        <p>
+          Log(x)
+        </p>
+        <SimpleLineChart 
+          className="myloglinechart overflow-x-auto w-full h-full flex md:justify-center items-center" 
+          data={logSeries} 
+          dataKeyX="x"
+          dataKeyY="logy"
+        />
 
         <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
           <a

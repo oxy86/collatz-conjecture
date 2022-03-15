@@ -15,7 +15,13 @@ The app uses tailwindcss for CSS and Recharts for charts and visualizaiton.
 
 ## Getting Started
 
-First, download the code and run the development server:
+First, download the code, enter the new folder and install the node packages:
+
+```bash
+npm install
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
