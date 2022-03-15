@@ -18,7 +18,7 @@ const renderColorfulLegendText = (value, entry, index) => {
 export const SimpleLineChart = (props) => {
     return (
         <div className={props.className}>
-            <ResponsiveContainer aspect={1.5} width={800} >
+            <ResponsiveContainer aspect={1.5} width={600} >
                 <LineChart
                     data={props.data}
                     margin={{
