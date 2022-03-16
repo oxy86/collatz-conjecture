@@ -11,55 +11,75 @@ import {
 
 export default function Home() {
 
+  const [startValue, setStartValue] = useState(1);
+
+  const [startValueMultiple, setStartValueMultiple] = useState(1);
+
   const [series, setSeries] = useState([]);
   const [logSeries, setLogSeries] = useState([]);
-  const [seedNum, setSeedNum] = useState(1);
 
 
-
+  // On load, compute the trivial series (x=1)
   useEffect(() => {
     computeSeries(1);
   }, [1]); // Only run the effect once
 
 
+  /**
+   * Handles changing the first input box
+   * @param {*} e 
+   * @returns null
+   */
   const handleInputChange = (e) => {
-    const newSeedNum = parseFloat(e.target.value);
-    if (newSeedNum == 0) {
+    const seedNum = parseFloat(e.target.value);
+    if (seedNum == 0) {
       return;
     }
-    setSeedNum(newSeedNum);
-    const mySeries = computeSeries(newSeedNum);
-
+    setStartValue(seedNum);
+    computeSeries(seedNum);
   }
 
-  const computeSeries = (newSeedNum) => {
-    var nextNum = newSeedNum;
+  /**
+   * Computes the series/sequence of hailstone numbers, starting with seedNum
+   * @param {*} seedNum 
+   * @returns 
+   */
+  const computeSeries = (seedNum) => {
+    var nextNum = seedNum;
     var minNumber = 1;
     var maxSteps = 1000;
     const mySeries = [
       {
         x: 0,
-        y: newSeedNum,
+        y: seedNum,
         ct: 1
       },
     ];
     const myLogSeries = [
       {
         x: 0,
-        logy: Math.log10(newSeedNum),
+        logy: Math.log10(seedNum),
         ct: 1
       },
     ];
 
     var i = 0;
-    if (newSeedNum == 1 || newSeedNum == 2) {
+
+    // Handle trivial cases
+    if (seedNum == 1 || seedNum == 2) {
       minNumber = 0;
       maxSteps = 10;
     }
 
+    // Loop
     while (nextNum > minNumber && i < maxSteps) {
+
       i = i + 1;
+
+      // Compute the next number
       nextNum = computeNext(i, nextNum);
+
+      // Update the sequence in memory
       mySeries.push(
         {
           x: i,
@@ -76,13 +96,14 @@ export default function Home() {
         }
       );
 
-
     }
 
+    // Update the series in state
     setSeries(mySeries);
     setLogSeries(myLogSeries);
-    return mySeries;
+
   }
+
 
   /**
    * Computes the next number (hailstone) in the sequence
@@ -102,6 +123,90 @@ export default function Home() {
     }
   }
 
+
+
+  /**
+   * Handles changing the second input box
+   * @param {*} e 
+   * @returns null
+   */
+   const handleInputChangeMultiple = (e) => {
+    const seedNum = parseFloat(e.target.value);
+    if (seedNum == 0) {
+      return;
+    }
+    setStartValueMultiple(seedNum);
+    computeSeriesMultiple(seedNum);
+  }
+
+
+
+  /**
+   * Computes multiple sequences up to seedNum
+   * @param {*} seedNum 
+   * @returns 
+   */
+   const computeSeriesMultiple= (seedNum) => {
+    var nextNum = seedNum;
+    var minNumber = 1;
+    var maxSteps = 1000;
+    const mySeries = [
+      {
+        x: 0,
+        y: seedNum,
+        ct: 1
+      },
+    ];
+    const myLogSeries = [
+      {
+        x: 0,
+        logy: Math.log10(seedNum),
+        ct: 1
+      },
+    ];
+
+    var i = 0;
+
+    // Handle trivial cases
+    if (seedNum == 1 || seedNum == 2) {
+      minNumber = 0;
+      maxSteps = 10;
+    }
+
+    // Loop
+    while (nextNum > minNumber && i < maxSteps) {
+
+      i = i + 1;
+
+      // Compute the next number
+      nextNum = computeNext(i, nextNum);
+
+      // Update the sequence in memory
+      mySeries.push(
+        {
+          x: i,
+          y: nextNum,
+          ct: 1
+        }
+      );
+
+      myLogSeries.push(
+        {
+          x: i,
+          logy: Math.log(nextNum),
+          ct: 1
+        }
+      );
+
+    }
+
+    // Update the series in state
+    setSeries(mySeries);
+    setLogSeries(myLogSeries);
+
+  }
+
+
   return (
     <div className="pt-8">
       <Head>
@@ -116,13 +221,13 @@ export default function Home() {
             Collatz Conjecture
           </h1>
           <p className="mt-3 text-2l">
-            Also known as the <code>Ulam Conjecture</code>, <code>Kakutani Problem</code>, <code>Syracuse Problem</code> or simply <code className='rounded-md bg-gray-100 p-1 mx-1 font-mono'>3N+1</code>
+            Also known as the <code>Ulam Conjecture</code>, <code>Kakutani Problem</code>, <code>Syracuse Problem</code> or simply <code className='rounded-md bg-gray-100 p-1 mx-1 font-mono'>3x+1</code>
           </p>
         </div>
 
         <div className="my-5 flex justify-center items-center">
           <p className="text-xl pr-4">
-            Pick a number:
+            Pick a positive number <code>x</code>:
           </p>
           <input
             min={1}
@@ -131,7 +236,7 @@ export default function Home() {
             placeholder="1"
             step="1"
             className="rounded text-pink-500 pr-4"
-            value={seedNum}
+            value={startValue}
             onChange={(e) => handleInputChange(e)}
           />
           {/* <input type="checkbox" class="rounded text-pink-500" /> */}
@@ -141,7 +246,7 @@ export default function Home() {
 
           <div className='flex-initial flex-col justify-center items-center'>
           <p>
-              x
+              The x sequence
             </p>
             <SimpleLineChart
               className="chart-wrapper"
@@ -152,7 +257,7 @@ export default function Home() {
           </div>
           <div className='flex-initial flex-col justify-center items-center'>
             <p>
-              Log(x)
+              The log(x) sequence
             </p>
             <SimpleLineChart
               className="chart-wrapper"
@@ -170,9 +275,9 @@ export default function Home() {
             <h3 className="text-2xl font-bold">The rules &rarr;</h3>
             <p className="mt-4 text-xl">
               Take any positive integer number.
-              If the number is odd, multiply it by <code>three</code> and add <code>one</code>.
-              If the number is even, divide by <code>two</code>.
-              Repeat with every new number.
+              If the number is odd, multiply it by <code>3</code> and add <code>1</code>.
+              If the number is even, divide by <code>2</code>.
+              Repeat with every new number to get a sequence of numbers.
             </p>
           </a>
 
@@ -182,10 +287,33 @@ export default function Home() {
           >
             <h3 className="text-2xl font-bold">The conjecture &rarr;</h3>
             <p className="mt-4 text-xl">
-              Every positive integer, if you apply these rules, will end up in a four, two, one loop.
+              EVERY positive integer, if you apply these rules, will end up in a 4 &rarr;  2 &rarr; 1 loop.
               This is commonly called the <code>Collatz Conjecture</code> after German mathematician Luther Collatz.
             </p>
           </a>
+        </div>
+
+        <div className='mt-10 flex flex-col hidden'>
+          <span className='font-bold underline'>Test multiple sequences</span>
+          <span className=''>Select any number to compute and graph all sequences that start with every number up to the selected number</span>
+
+          <div className="my-5 flex justify-center items-center">
+          <p className="text-xl pr-4">
+            Pick a number <code>X</code>:
+          </p>
+          <input
+            min={1}
+            type="number"
+            placeholder="2"
+            step="1"
+            className="rounded text-pink-500 pr-4"
+            value={startValueMultiple}
+            onChange={(e) => handleInputChangeMultiple(e)}
+          />
+          {/* <input type="checkbox" class="rounded text-pink-500" /> */}
+        </div>
+
+
         </div>
 
       </main>
