@@ -31,5 +31,7 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app running.
 
+Changelog: 
 
+2024/12/10 - Push to Vercel
 
